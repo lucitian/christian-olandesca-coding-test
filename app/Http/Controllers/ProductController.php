@@ -32,6 +32,7 @@ class ProductController extends Controller
         return response()->json(['product' => $product], 200);
     }
 
+    //Update product
     public function update(Product $product) {
         $attributes = $this->validateProduct($product);
         $product->update($attributes);
@@ -39,9 +40,16 @@ class ProductController extends Controller
         return response()->json(['product' => $product], 200);
     }
 
+    //Delete product
+    public function destroy(Product $product) {
+        $product->delete();
+
+        return response()->json(['message' => 'Product deleted successfully!'], 200);
+    }
+
     public function validateProduct(?Product $product = null) : array {
         return request()->validate([
-            'name' =>  ['required', Rule::unique('products', 'name')->ignore($product->id)],
+            'name' =>  ['required', 'max:255', Rule::unique('products', 'name')->ignore($product->id)],
             'description' => 'required',
             'price' => 'required'
         ]);
