@@ -17,13 +17,9 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
-        $name = $this->faker->name;
-        $slug = Str::slug($name, '-');
-
         return [
             //
-            'name' => $name,
-            'slug' => $slug,
+            'name' => $this->faker->name(),
             'description' => $this->faker->paragraph(2),
             'price' => $this->faker->numberBetween(999, 19999)
         ];

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class ProductController extends Controller
 {
@@ -24,16 +25,25 @@ class ProductController extends Controller
 
     //Store product
     public function store() {
-        $product = request()->validate([
-            'name' =>  'required|max:255',
-            'description' => 'required',
-            'price' => 'required'
-        ]);
-
-        $product['slug'] = Str::slug($product['name'],'-');
+        $product = $this->validateProduct(new Product());
 
         Product::create($product);
 
         return response()->json(['product' => $product], 200);
+    }
+
+    public function update(Product $product) {
+        $attributes = $this->validateProduct($product);
+        $product->update($attributes);
+
+        return response()->json(['product' => $product], 200);
+    }
+
+    public function validateProduct(?Product $product = null) : array {
+        return request()->validate([
+            'name' =>  ['required', Rule::unique('products', 'name')->ignore($product->id)],
+            'description' => 'required',
+            'price' => 'required'
+        ]);
     }
 }
