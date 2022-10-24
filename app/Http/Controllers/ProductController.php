@@ -12,5 +12,8 @@ class ProductController extends Controller
         return response()->json(['products' => Product::all()], 200);
     }
 
-    //Add product/s
+    //Show product
+    public function show(Product $product) {
+        return response()->json(['product' => $product], 200);
+    }
 }
