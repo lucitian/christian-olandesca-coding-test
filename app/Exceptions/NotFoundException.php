@@ -6,6 +6,7 @@ use Exception;
 
 class NotFoundException extends Exception
 {
-    //
-    protected $message = 'Data not found!';
+    protected $message = 'Resource not found!';
+
+    protected $code = 404;
 }
