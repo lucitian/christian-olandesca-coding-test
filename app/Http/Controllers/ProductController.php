@@ -7,6 +7,7 @@ use App\Http\Requests\ProductRequest;
 use App\Services\Products\ProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -35,9 +36,15 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        return response()->json([
-            'product' => $this->productService->find($id)
-        ]);
+        return Cache::remember(
+            'productDetails-' . $id,
+            10,
+            function() use ($id) {
+                return response()->json([
+                    'product' => $this->productService->find($id)
+                ]);
+            }
+        );
     }
 
     /**
